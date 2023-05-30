@@ -1,17 +1,14 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
-from sklearn import metrics
 from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler  
-from sklearn.neighbors import KNeighborsClassifier
 import plotly.express as px
 import google.auth
 from google.cloud import storage
+
+from model import *
+from viz import *
 
 def get_csv_gcs(bucket_name, file_name):
     csv_data = pd.read_csv('gs://' + bucket_name + '/' + file_name, encoding='utf-8')  
@@ -21,11 +18,8 @@ def get_csv_gcs(bucket_name, file_name):
 bucket_name = "dataprep-staging-76a4eba9-abb7-41ce-9168-df23035f64aa/yaffazka@gmail.com/jobrun"
 file_name = "Join Table.csv"
 
-
-
 @st.cache_data
 def loadData(bucket_name, file_name):
-
 	df = pd.read_csv('gs://' + bucket_name + '/' + file_name, encoding='utf-8')  
 	return df
 
@@ -42,68 +36,6 @@ def preprocessing(df):
 	# 1. Splitting X,y into Train & Test
 	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=0)
 	return X_train, X_test, y_train, y_test, le
-
-
-# Training Decission Tree for Classification
-@st.cache_resource(experimental_allow_widgets=True)
-def decisionTree(X_train, X_test, y_train, y_test):
-	# Train the model
-	tree = DecisionTreeClassifier(max_leaf_nodes=3, random_state=0)
-	tree.fit(X_train, y_train)
-	y_pred = tree.predict(X_test)
-	score = metrics.accuracy_score(y_test, y_pred) * 100
-	report = classification_report(y_test, y_pred)
-
-	return score, report, tree
-
-# Training Neural Network for Classification.
-@st.cache_resource(experimental_allow_widgets=True)
-def neuralNet(X_train, X_test, y_train, y_test):
-	# Scalling the data before feeding it to the Neural Network.
-	scaler = StandardScaler()  
-	scaler.fit(X_train)  
-	X_train = scaler.transform(X_train)  
-	X_test = scaler.transform(X_test)
-	# Instantiate the Classifier and fit the model.
-	clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
-	clf.fit(X_train, y_train)
-	y_pred = clf.predict(X_test)
-	score1 = metrics.accuracy_score(y_test, y_pred) * 100
-	report = classification_report(y_test, y_pred)
-	
-	return score1, report, clf
-
-# Training KNN Classifier
-@st.cache_resource(experimental_allow_widgets=True)
-def Knn_Classifier(X_train, X_test, y_train, y_test):
-	clf = KNeighborsClassifier(n_neighbors=5)
-	clf.fit(X_train, y_train)
-	y_pred = clf.predict(X_test)
-	score = metrics.accuracy_score(y_test, y_pred) * 100
-	report = classification_report(y_test, y_pred)
-
-	return score, report, clf
-
-
-# Accepting user data for predicting its Member Type
-def accept_user_data():
-	duration = st.text_input("Enter the Duration: ")
-	start_station = st.text_input("Enter the start station number: ")
-	end_station = st.text_input("Enter the end station number: ")
-	user_prediction_data = np.array([duration,start_station,end_station]).reshape(1,-1)
-
-	return user_prediction_data
-
-
-# Loading the data for showing visualization of vehicals starting from various start locations on the world map.
-@st.cache_data
-def showMap():
-	plotData = pd.read_csv("Trip history with locations.csv")
-	Data = pd.DataFrame()
-	Data['lat'] = plotData['lat']
-	Data['lon'] = plotData['lon']
-
-	return Data
 
 
 def main():
