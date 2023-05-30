@@ -15,8 +15,8 @@ def get_csv_gcs(bucket_name, file_name):
     # csv_data = pd.read_excel('gs://' + bucket_name + '/' + file_name, encoding='utf-8')    
     return csv_data
 
-bucket_name = "dataprep-staging-76a4eba9-abb7-41ce-9168-df23035f64aa/yaffazka@gmail.com/jobrun"
-file_name = "Join Table.csv"
+bucket_name = "mybucket-bikeshare"
+file_name = "2010-capitalbikeshare-tripdata.csv"
 
 @st.cache_data
 def loadData(bucket_name, file_name):
