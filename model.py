@@ -9,6 +9,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
+
 # Basic preprocessing required for all the models.  
 def preprocessing(df):
 	# Assign X and y
@@ -50,3 +51,14 @@ def neuralNet(X_train, X_test, y_train, y_test):
 	report = classification_report(y_test, y_pred)
 	
 	return score1, report, clf
+
+# # Training KNN Classifier
+# @st.cache_resource(experimental_allow_widgets=True)
+# def Knn_Classifier(X_train, X_test, y_train, y_test):
+# 	clf = KNeighborsClassifier(n_neighbors=5)
+# 	clf.fit(X_train, y_train)
+# 	y_pred = clf.predict(X_test)
+# 	score = metrics.accuracy_score(y_test, y_pred) * 100
+# 	report = classification_report(y_test, y_pred)
+
+# 	return score, report, clf
