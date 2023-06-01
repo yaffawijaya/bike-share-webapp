@@ -2,7 +2,7 @@
 
 Command to build the application. PLease remeber to change the project name and application name
 ```
-gcloud builds submit --tag gcr.io/bike-share-388211/washington-dc-bikeshare-app ./DockerFile --project=bike-share-388211
+gcloud builds submit --tag gcr.io/bike-share-388211/washington-dc-bikeshare-app --project=bike-share-388211
 ```
 
 Command to deploy the application
